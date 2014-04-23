@@ -1,0 +1,28 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+  	padding-top: 0px;
+  	padding-bottom: 20px;
+}
+
+.jumbotron {
+	padding-top: 10px;
+}
+
+.featurette-image-container {
+	margin-bottom: -200px;
+}
+
+.featurette-image {
+	margin-bottom: -20px;
+   	padding:3px;
+   	border:1px solid #021a40;
+   	background-color:#fff;
+}
+
+.login-form {
+	padding:3px;
+}
+
+.body-container {
+	margin-top: 200px;
+}

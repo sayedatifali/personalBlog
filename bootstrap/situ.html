@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/ico/favicon.png">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Paprika|Gudea|Tangerine|Oranienbaum|Fenix">
+
+    <title>Starter Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/situ.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div id="wrap">
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Home</a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="#interests">Interests</a></li>
+              <li><a href="#blog">Blog</a></li>
+              <li><a href="#3d">Cool Stuff</a></li>
+              <li><a href="#contact">Vision</a></li> <!-- Solve real world problems and contribute to the growth of society. Insert a powerful quote or pic or message here-->
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+
+      <div class="container">
+
+        <div class="page-body">
+          <div class="col-md-8">
+            <h1></h1>
+            <p class="text-muted about-me-text">Hi, I am a software engineer by day and code ninja by night.
+              <br><br> I like to build <em> cool </em> software. I'm a student with an unquenchable thirst for knowledge. I consider myself a Full Stack Engineer who can work across domains, right from the backend to the frontend.
+              <br><br> In my spare time you would find me:
+              <br><ul class="text-muted about-me-text">
+                <li>Coding away at TopCoder</li>
+                <li>Hacking away at something </li>
+                <li>Prowling MOOC websites</li>
+              </ul>
+            </p>
+          </div>
+          <div class="profile-pic col-md-4">
+            <img class="featurette-image img-responsive img-thumbnail" src="assets/img/3.jpg">
+          </div>
+        </div>
+
+      </div><!-- /.container -->
+    </div>
+
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+      </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+
+      var page_body = $(".page-body");
+
+      $(document).ready(function() {
+
+        page_body.hide();
+
+        page_body.fadeIn('slow');
+
+        var transformProp = Modernizr.prefixed('transform');
+
+        function Carousel3D ( el ) {
+          this.element = el;
+
+          this.rotation = 0;
+          this.panelCount = 0;
+          this.totalPanelCount = this.element.children.length;
+          this.theta = 0;
+
+          this.isHorizontal = true;
+
+        }
+
+        Carousel3D.prototype.modify = function() {
+
+          var panel, angle, i;
+
+          this.panelSize = this.element[ this.isHorizontal ? 'offsetWidth' : 'offsetHeight' ];
+          this.rotateFn = this.isHorizontal ? 'rotateY' : 'rotateX';
+          this.theta = 360 / this.panelCount;
+
+          // do some trig to figure out how big the carousel
+          // is in 3D space
+          this.radius = Math.round( ( this.panelSize / 2) / Math.tan( Math.PI / this.panelCount ) );
+
+          for ( i = 0; i < this.panelCount; i++ ) {
+            panel = this.element.children[i];
+            angle = this.theta * i;
+            panel.style.opacity = 1;
+            panel.style.backgroundColor = 'hsla(' + angle + ', 100%, 50%, 0.8)';
+            // rotate panel, then push it out in 3D space
+            panel.style[ transformProp ] = this.rotateFn + '(' + angle + 'deg) translateZ(' + this.radius + 'px)';
+          }
+
+          // hide other panels
+          for (  ; i < this.totalPanelCount; i++ ) {
+            panel = this.element.children[i];
+            panel.style.opacity = 0;
+            panel.style[ transformProp ] = 'none';
+          }
+
+          // adjust rotation so panels are always flat
+          this.rotation = Math.round( this.rotation / this.theta ) * this.theta;
+
+          this.transform();
+
+        };
+
+        Carousel3D.prototype.transform = function() {
+          // push the carousel back in 3D space,
+          // and rotate it
+          this.element.style[ transformProp ] = 'translateZ(-' + this.radius + 'px) ' + this.rotateFn + '(' + this.rotation + 'deg)';
+        };
+
+
+
+        var init = function() {
+
+          var carousel = new Carousel3D( document.getElementById('carousel') ),
+              panelCountInput = document.getElementById('panel-count'),
+              axisButton = document.getElementById('toggle-axis'),
+              navButtons = document.querySelectorAll('#navigation button'),
+
+              onNavButtonClick = function( event ){
+                var increment = parseInt( event.target.getAttribute('data-increment') );
+                carousel.rotation += carousel.theta * increment * -1;
+                carousel.transform();
+              };
+
+          // populate on startup
+          carousel.panelCount = parseInt( panelCountInput.value, 10);
+          carousel.modify();
+
+
+          axisButton.addEventListener( 'click', function(){
+            carousel.isHorizontal = !carousel.isHorizontal;
+            carousel.modify();
+          }, false);
+
+          panelCountInput.addEventListener( 'change', function( event ) {
+            carousel.panelCount = event.target.value;
+            carousel.modify();
+          }, false);
+
+          for (var i=0; i < 2; i++) {
+            navButtons[i].addEventListener( 'click', onNavButtonClick, false);
+          }
+
+          document.getElementById('toggle-backface-visibility').addEventListener( 'click', function(){
+            carousel.element.toggleClassName('panels-backface-invisible');
+          }, false);
+
+          setTimeout( function(){
+            document.body.addClassName('ready');
+          }, 0);
+
+        };
+        window.addEventListener( 'DOMContentLoaded', init, false);
+
+      });
+
+    </script>
+  </body>
+</html>
